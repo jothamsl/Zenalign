@@ -1,0 +1,11 @@
+name,age,email,income,score,city
+Alice,25,alice@example.com,55000,85.5,New York
+Bob,30,bob@test.org,62000,90.0,San Francisco
+Charlie,35,charlie@mail.com,58000,78.5,Chicago
+David,28,,61000,88.0,Boston
+Eve,32,eve@example.com,67000,92.5,Seattle
+Frank,29,frank@test.com,59000,82.0,Austin
+Grace,31,grace@example.org,64000,87.5,Denver
+Henry,27,henry@mail.com,56000,79.0,Portland
+Ivy,33,,63000,91.0,Miami
+Jack,26,jack@example.com,57000,84.5,Atlanta
