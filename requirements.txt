@@ -9,7 +9,6 @@ openai==1.10.0
 exa-py>=2.0.0
 python-dotenv==1.0.0
 pytest==7.4.3
-httpx>=0.26.0
 pytest-mock==3.15.1
 mongomock==4.1.2
 python-multipart==0.0.18
