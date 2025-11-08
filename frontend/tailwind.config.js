@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -49,7 +46,7 @@ export default {
       keyframes: {
         "scroll-carousel-infinite": {
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" }
+          "100%": { transform: "translateX(-50%)" },
         },
         "accordion-down": {
           from: { height: "0" },
@@ -59,13 +56,25 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "zoom-in": {
+          "0%": { transform: "scale(0.95)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
-        "scroll-carousel-infinite": "scroll-carousel-infinite 12s linear infinite",
+        "scroll-carousel-infinite":
+          "scroll-carousel-infinite 12s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        in: "fade-in 0.3s ease-out",
+        "fade-in": "fade-in 0.3s ease-out",
+        "zoom-in-95": "zoom-in 0.5s ease-out",
       },
     },
   },
   plugins: [],
-}
+};

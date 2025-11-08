@@ -1,5 +1,6 @@
 import { Paperclip, ArrowUp, Upload, X, FileSpreadsheet } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { LoadingOverlay } from "./LoadingOverlay";
 
 const datasetPrompts = [
   "Ready to validate your dataset?",
@@ -251,6 +252,9 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
 
   return (
     <>
+      {/* Loading Overlay */}
+      <LoadingOverlay isUploading={isUploading} isAnalyzing={isAnalyzing} />
+
       <div className="w-full max-w-2xl">
         <h1 className="text-center text-3xl mb-8 font-[Inter] text-[36px] font-normal">
           {selectedPrompt}
@@ -313,20 +317,6 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
           {error && (
             <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
               {error}
-            </div>
-          )}
-
-          {/* Loading State */}
-          {(isUploading || isAnalyzing) && (
-            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 text-sm text-blue-700">
-                <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                <span>
-                  {isUploading && "Uploading dataset..."}
-                  {isAnalyzing &&
-                    "Analyzing dataset... (This may take 20-30 seconds)"}
-                </span>
-              </div>
             </div>
           )}
 
