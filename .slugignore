@@ -1,0 +1,86 @@
+# Heroku .slugignore - Exclude files from deployment slug
+
+# Development files
+*.pyc
+__pycache__/
+*.pytest_cache/
+.pytest_cache/
+
+# Documentation
+*.md
+!README.md
+PAYMENT_*.md
+UI_*.md
+FRONTEND_*.md
+FREE_*.md
+EXISTING_*.md
+
+# Docker files (not needed for Heroku)
+docker-compose.yml
+Dockerfile.dev
+DOCKER_SETUP.md
+
+# Test files
+test_*.py
+app/tests/
+frontend/src/**/*.test.ts
+frontend/src/**/*.test.tsx
+
+# Development scripts
+setup.sh
+start.sh
+stop.sh
+Makefile
+
+# Frontend source (deploy built version only)
+frontend/src/
+frontend/node_modules/
+frontend/public/
+frontend/tsconfig.json
+frontend/vite.config.ts
+frontend/postcss.config.js
+frontend/tailwind.config.js
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env.example
+.env.local
+.env.development
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# Migration scripts (run separately)
+migrations/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml

@@ -4,13 +4,34 @@
 
 Built with Test-Driven Development (TDD) following principles from "Building Applications with AI Agents" by Michael Albada (O'Reilly 2025).
 
+## 💳 Payment Integration
+
+Senalign now includes a **token-based monetization system** powered by **Interswitch Payment Gateway**!
+
+- ✅ **Purchase tokens** to run dataset analyses
+- ✅ **10 tokens per analysis** (₦5 at default rate of 2 tokens per ₦1)
+- ✅ **Multiple payment methods** - Card, Transfer, USSD, Wallet, etc.
+- ✅ **Test mode enabled** - Full test credentials included for development
+- ✅ **Production ready** - Complete OAuth2 + Web Checkout integration
+
+📖 **[Read Full Payment Integration Documentation →](PAYMENT_INTEGRATION.md)**
+
+**Quick Setup**: The system works out-of-the-box with test credentials. For production, add your Interswitch credentials to `.env`:
+```bash
+INTERSWITCH_CLIENT_ID=your_client_id
+INTERSWITCH_SECRET_KEY=your_secret_key
+INTERSWITCH_MERCHANT_CODE=your_merchant_code
+INTERSWITCH_PAY_ITEM_ID=your_pay_item_id
+```
+
 ## Architecture
 
 Senalign uses a **single-agent architecture** for quick hackathon iteration:
-- **Tools**: Profiler, PII detector, LLM client (OpenAI), Exa search
-- **Memory**: MongoDB for episodic storage of analyses and reports
+- **Tools**: Profiler, PII detector, LLM client (OpenAI), Exa search, Payment gateway (Interswitch)
+- **Memory**: MongoDB for episodic storage of analyses, reports, and payment transactions
 - **Orchestration**: Simple sequential chains (profile → LLM → Exa)
 - **Privacy-first**: Local processing, anonymized summaries to external APIs
+- **Monetization**: Token-based payment system for analysis sessions
 
 ## Quick Start
 
@@ -25,7 +46,7 @@ Senalign uses a **single-agent architecture** for quick hackathon iteration:
 # One-command setup
 ./setup.sh
 
-# Edit .env with your API keys
+# Edit .env with your API keys (OpenAI, Exa, optional Interswitch)
 nano .env  # or use your preferred editor
 
 # Start everything
@@ -238,18 +259,30 @@ senalign/
 └── README.md             # This file
 ```
 
-## API Endpoints (Planned)
+## API Endpoints
 
 ### Base URL: `/api/v1`
 
+#### Dataset Endpoints
 - ✅ `POST /upload` - Upload dataset with problem context (CSV/JSON)
   - Requires: file + problem_description (min 10 chars)
   - Optional: problem_type, dataset_description
   - Returns: dataset_id, metadata, auto-detected problem type
   - Stores: MongoDB metadata + temp file for processing
-- `POST /analyze/{dataset_id}` - Run full analysis pipeline
-- `POST /transform/{dataset_id}` - Apply data transformations
+- ✅ `POST /analyze/{dataset_id}` - Run full analysis pipeline
+  - **Requires**: 10 tokens (user-email header)
+  - Returns: Complete analysis report + token info
+- `POST /transform/{dataset_id}` - Apply data transformations (planned)
 - ✅ `GET /health` - Health check
+
+#### Payment Endpoints
+- ✅ `GET /payment/pricing` - Get token pricing information
+- ✅ `POST /payment/purchase` - Purchase tokens via Interswitch
+- ✅ `POST /payment/verify/{transaction_ref}` - Verify payment and credit tokens
+- ✅ `GET /payment/balance/{user_email}` - Get user token balance
+- ✅ `GET /payment/balance/{user_email}/history` - Get consumption history
+- ✅ `GET /payment/transaction/{transaction_ref}` - Get transaction status
+- ✅ `GET /payment/inline-config` - Get inline checkout configuration
 
 ## Development Status
 
@@ -321,14 +354,18 @@ senalign/
 - [x] Integration with analyze endpoint
 - [x] 10 comprehensive tests passing (9/10, 1 flaky)
 
+### Feature 9: Payment Integration ✅
+- [x] Interswitch Payment Gateway client (OAuth2 + Web Checkout)
+- [x] Token management service
+- [x] Payment API endpoints (purchase, verify, balance)
+- [x] MongoDB collections for transactions and balances
+- [x] Token consumption in analyze endpoint
+- [x] Frontend components (TokenBalance, TokenPurchase)
+- [x] Comprehensive documentation
+- [x] Test credentials and test mode support
+
 ### Skipped Features
 - [ ] Feature 8: Transform Endpoint (Optional - nice-to-have)
-- [ ] Feature 3: Profiling Service
-- [ ] Feature 4: PII Detection
-- [ ] Feature 5: LLM Recommendations
-- [ ] Feature 6: Exa Integration
-- [ ] Feature 7: Analysis Orchestration
-- [ ] Feature 8: Transform Endpoint (Optional)
 
 ## TDD Workflow
 
@@ -352,6 +389,7 @@ Following Ch. 12 principles:
 - **PyMongo**: MongoDB driver
 - **Pandas/Scikit-learn**: Data profiling
 - **OpenAI**: LLM recommendations
+- **Requests**: HTTP client for Interswitch API
 - **pytest**: Testing framework
 - **mongomock**: MongoDB mocking for tests
 
@@ -471,9 +509,19 @@ cd frontend && npm run dev
 
 ### Backend (.env)
 ```
+# Database
 MONGODB_URI=mongodb://localhost:27017/
+
+# AI Services
 OPENAI_API_KEY=sk-...
 EXA_API_KEY=...
+
+# Payment (Optional - uses test credentials by default)
+INTERSWITCH_CLIENT_ID=your_client_id
+INTERSWITCH_SECRET_KEY=your_secret_key
+INTERSWITCH_MERCHANT_CODE=your_merchant_code
+INTERSWITCH_PAY_ITEM_ID=your_pay_item_id
+PAYMENT_CALLBACK_URL=https://yourdomain.com/payment/callback
 ```
 
 ### Frontend (.env)
@@ -505,11 +553,18 @@ VITE_API_URL=http://localhost:8000
 
 ✅ **Complete and Production-Ready**
 
-- 7/8 features implemented (87.5%)
+- 8/9 features implemented (88.9%)
 - 62/64 tests passing (96.9%)
 - Full-stack integrated
 - End-to-end functional
 - Privacy-first architecture
 - AI-powered insights
 - Beautiful, modern UI
+- **Token-based monetization with Interswitch payments**
+
+## 📚 Documentation
+
+- **[Payment Integration Guide](PAYMENT_INTEGRATION.md)** - Complete Interswitch integration documentation
+- **[API Documentation](http://localhost:8000/docs)** - Interactive API docs (when server is running)
+- **[Frontend README](frontend/README.md)** - React frontend setup and usage
 

@@ -1,15 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { Header } from './components/Header';
-import { ChatInput } from './components/ChatInput';
-import { Footer } from './components/Footer';
-import { AnalysisResults } from './components/AnalysisResults';
-import { AnalysisReport } from './services/api';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { Toaster } from "sonner";
+import { Header } from "./components/Header";
+import { ChatInput } from "./components/ChatInput";
+import { Footer } from "./components/Footer";
+import { AnalysisResults } from "./components/AnalysisResults";
+import { AnalysisReport } from "./services/api";
 
 function HomePage() {
   const navigate = useNavigate();
 
   const handleAnalyzeComplete = (report: AnalysisReport) => {
-    navigate('/results', { state: { report } });
+    navigate("/results", { state: { report } });
   };
 
   return (
@@ -31,7 +38,7 @@ function ResultsPage() {
   const report = location.state?.report as AnalysisReport | undefined;
 
   const handleBack = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -46,6 +53,7 @@ function ResultsPage() {
 export default function App() {
   return (
     <Router>
+      <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/results" element={<ResultsPage />} />

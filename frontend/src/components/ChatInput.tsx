@@ -1,5 +1,6 @@
 import { Paperclip, ArrowUp, Upload, X, FileSpreadsheet } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import { LoadingOverlay } from "./LoadingOverlay";
 
 const datasetPrompts = [
@@ -213,6 +214,13 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
       return;
     }
 
+    if (input.trim().length < 10) {
+      setError(
+        "Problem description must be at least 10 characters long. Please provide more details about your ML problem.",
+      );
+      return;
+    }
+
     try {
       // Step 1: Upload dataset
       setIsUploading(true);
@@ -231,6 +239,7 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
 
       const analysisReport = await senalignAPI.analyzeDataset(
         uploadResponse.dataset_id,
+        "user@senalign.com", // Default user email
       );
 
       setIsAnalyzing(false);
@@ -242,11 +251,63 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
     } catch (err: any) {
       setIsUploading(false);
       setIsAnalyzing(false);
-      setError(
-        err.response?.data?.detail ||
-          err.message ||
-          "Failed to analyze dataset. Please try again.",
-      );
+
+      // Helper function to extract error message
+      const getErrorMessage = (error: any): string | null => {
+        // Check for insufficient tokens (HTTP 402) - will be shown as toast
+        if (error.response?.status === 402) {
+          const errorDetail = error.response?.data?.detail;
+          if (
+            typeof errorDetail === "object" &&
+            errorDetail.error === "Insufficient token balance"
+          ) {
+            // Show toast notification for insufficient tokens
+            toast.error("Insufficient Tokens", {
+              description: `You need ${errorDetail.required_tokens} tokens but only have ${errorDetail.current_balance}. Click the token balance in the header to purchase more tokens.`,
+              duration: 6000,
+            });
+            return null; // Don't show in error display
+          }
+          toast.error("Insufficient Tokens", {
+            description:
+              "Insufficient tokens to run analysis. Please purchase tokens to continue.",
+            duration: 5000,
+          });
+          return null; // Don't show in error display
+        }
+
+        // Check for validation errors (HTTP 422)
+        if (error.response?.status === 422) {
+          const detail = error.response?.data?.detail;
+          if (Array.isArray(detail)) {
+            // Pydantic validation errors
+            const messages = detail.map((err: any) => {
+              const field = err.loc?.join(".") || "field";
+              return `${field}: ${err.msg}`;
+            });
+            return `Validation error: ${messages.join(", ")}`;
+          }
+          if (typeof detail === "string") {
+            return detail;
+          }
+          return "Validation error. Please check your input.";
+        }
+
+        // Default error handling
+        const detail = error.response?.data?.detail;
+        if (typeof detail === "string") {
+          return detail;
+        }
+        if (typeof detail === "object" && detail.message) {
+          return detail.message;
+        }
+        return error.message || "Failed to analyze dataset. Please try again.";
+      };
+
+      const errorMessage = getErrorMessage(err);
+      if (errorMessage) {
+        setError(errorMessage);
+      }
     }
   };
 
@@ -310,6 +371,14 @@ export function ChatInput({ onAnalyzeComplete }: ChatInputProps) {
               >
                 {placeholderExamples[currentPlaceholder]}
               </div>
+            )}
+          </div>
+
+          {/* Character Counter */}
+          <div className="mt-2 text-xs text-gray-500 text-right">
+            {input.trim().length}/10 characters minimum
+            {input.trim().length >= 10 && (
+              <span className="ml-2 text-green-600">✓</span>
             )}
           </div>
 
