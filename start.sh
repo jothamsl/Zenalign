@@ -1,32 +1,34 @@
 #!/bin/bash
 
-# Quick start script for Senalign Dataset Quality Validator
+# Quick start script - starts MongoDB and the Senalign server
 
-echo "=========================================="
-echo "Senalign Dataset Quality Validator"
-echo "=========================================="
+set -e
+
+echo "🚀 Starting Senalign..."
 echo ""
 
-# Check for OPENAI_API_KEY
-if [ -z "$OPENAI_API_KEY" ]; then
-    echo "⚠️  WARNING: OPENAI_API_KEY is not set!"
-    echo "LLM analysis will fail without this key."
-    echo ""
-    echo "Set it with:"
-    echo "  export OPENAI_API_KEY=your_openai_key_here"
-    echo ""
-    read -p "Continue anyway? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
-else
-    echo "✓ OPENAI_API_KEY is set"
+# Start MongoDB
+echo "📦 Starting MongoDB..."
+docker compose up -d mongodb
+
+# Wait for MongoDB
+echo "⏳ Waiting for MongoDB (5 seconds)..."
+sleep 5
+
+# Activate venv
+if [ ! -d "venv" ]; then
+    echo "❌ Virtual environment not found. Run ./setup.sh first."
+    exit 1
 fi
 
+source venv/bin/activate
+
+# Start the server
+echo "🌐 Starting Senalign server..."
+echo "   API: http://localhost:8000"
+echo "   Docs: http://localhost:8000/docs"
 echo ""
-echo "Starting server on http://localhost:8000"
-echo "API docs: http://localhost:8000/docs"
+echo "Press Ctrl+C to stop"
 echo ""
 
-python -m uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000

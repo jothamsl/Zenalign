@@ -1,17 +1,42 @@
-.env
-data/
-*.pyc
+# Python
 __pycache__/
-*.egg-info/
-dist/
-build/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
-.venv/
-venv/
-node_modules/
-.DS_Store
+*.cover
 
-# But keep frontend/dist for Heroku
-!frontend/dist/
+# node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+
+# Temp files
+temp/
+*.csv
+*.json
+!requirements.txt
+
+# MongoDB
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
