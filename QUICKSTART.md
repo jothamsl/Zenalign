@@ -30,11 +30,11 @@ Then open: **http://localhost:3000**
 - Examples: "I want to predict customer churn...", "I need to classify images...", etc.
 - Optional target column input
 - Optional protected columns (comma-separated)
-- GPT-5 will understand your problem and tailor recommendations
+- GPT-4o will understand your problem and tailor recommendations
 
 ### 3. Results Screen
 - 🎯 **Quality Score**: Big colored circle (0-100)
-- 🤖 **GPT-5 Analysis**: 
+- 🤖 **GPT-4o Analysis**: 
   - Problem understanding (how AI interpreted your description)
   - Recommended ML approach
   - Feature engineering suggestions
@@ -48,8 +48,8 @@ Then open: **http://localhost:3000**
 
 1. **Upload**: Click file → Select `tests/sample_data.csv` → Upload
 2. **Describe**: Write "I want to predict customer scores based on demographics and income"
-3. **Analyze**: Click "Analyze with GPT-5" → Wait 10-30 seconds
-4. **Review**: See quality score, GPT-5's understanding, tailored recommendations
+3. **Analyze**: Click "Analyze with GPT-4o" → Wait 10-30 seconds
+4. **Review**: See quality score, GPT-4o's understanding, tailored recommendations
 
 ---
 

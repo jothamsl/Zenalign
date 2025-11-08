@@ -10,3 +10,8 @@ build/
 htmlcov/
 .venv/
 venv/
+node_modules/
+.DS_Store
+
+# But keep frontend/dist for Heroku
+!frontend/dist/

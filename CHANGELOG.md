@@ -10,11 +10,11 @@
 - **Description**: Users now describe their ML problem in plain English
 
 #### `app/services/llm_client.py`
-- **Model**: Upgraded from `gpt-4o-mini` → `gpt-4o` → `gpt-5`
+- **Model**: Upgraded from `gpt-4o-mini` → `gpt-4o`
 - **System Prompt**: Enhanced to act as ML consultant, not just data quality expert
 - **User Prompt**: Completely rewritten to:
   - Accept natural language problem description
-  - Ask GPT-5 to interpret the problem
+  - Ask GPT-4o to interpret the problem
   - Request contextual recommendations
   - Suggest appropriate ML approaches
   - Provide feature engineering ideas specific to user's use case
@@ -22,7 +22,7 @@
 #### New JSON Response Fields
 ```json
 {
-  "problem_understanding": "GPT-5's interpretation",
+  "problem_understanding": "GPT-4o's interpretation",
   "recommended_approach": "Specific ML methods",
   "feature_engineering_suggestions": [...],
   "suitability_assessment": "How well data fits use case",
@@ -40,8 +40,8 @@
 - **Placeholder**: Helpful example text
 - **UI Updates**: 
   - Section title: "Describe Your ML Problem"
-  - Button: "Analyze with GPT-5"
-  - Loading message: "GPT-5 is analyzing..."
+  - Button: "Analyze with GPT-4o"
+  - Loading message: "GPT-4o is analyzing..."
   - Results: New sections for problem understanding, recommended approach, feature suggestions
 
 #### New Result Sections Displayed
@@ -78,7 +78,7 @@
 
 **After:**
 - Write: "I want to predict customer churn based on usage patterns..."
-- GPT-5 understands context
+- GPT-4o understands context
 - Receives tailored recommendations for churn prediction
 - Gets feature engineering ideas specific to churn
 - Sees suggested metrics like "churn rate", "customer lifetime value"
@@ -87,40 +87,40 @@
 
 1. **More Contextual**: Recommendations tailored to actual use case
 2. **Better UX**: No need to know ML terminology upfront
-3. **Smarter AI**: GPT-5 interprets and guides the user
+3. **Smarter AI**: GPT-4o interprets and guides the user
 4. **Flexible**: Works for any ML problem, not just predefined categories
-5. **Educational**: GPT-5 explains what type of problem it is
+5. **Educational**: GPT-4o explains what type of problem it is
 
 ## Example Interactions
 
 ### Example 1: Customer Churn
 **Input**: "I want to predict which customers will cancel their subscription in the next month"
-**GPT-5 Returns**:
+**GPT-4o Returns**:
 - Problem Understanding: "Binary classification for churn prediction"
 - Recommended Approach: "Gradient boosting with class imbalance handling"
 - Feature Ideas: "Engagement metrics, usage decline patterns, subscription tenure"
 
 ### Example 2: Image Classification
 **Input**: "I need to categorize product photos into electronics, clothing, or home goods"
-**GPT-5 Returns**:
+**GPT-4o Returns**:
 - Problem Understanding: "Multi-class image classification problem"
 - Recommended Approach: "Transfer learning with ResNet or EfficientNet"
 - Concerns: "Dataset appears to be tabular, not images - mismatch detected"
 
 ### Example 3: Anomaly Detection
 **Input**: "I want to find unusual patterns in network traffic for security"
-**GPT-5 Returns**:
+**GPT-4o Returns**:
 - Problem Understanding: "Unsupervised anomaly detection"
 - Recommended Approach: "Isolation Forest or Autoencoder-based methods"
 - Feature Ideas: "Traffic volume spikes, connection patterns, temporal features"
 
 ## Technical Details
 
-- **Model**: GPT-5 (latest as of 2025)
+- **Model**: GPT-4o (latest as of 2024)
 - **Temperature**: 0.3 (consistent responses)
 - **Response Format**: JSON object (structured)
 - **Context Window**: Includes full dataset profile + user description
-- **PII Handling**: Still sanitized before sending to GPT-5
+- **PII Handling**: Still sanitized before sending to GPT-4o
 
 ## Backwards Compatibility
 
@@ -149,7 +149,7 @@ All existing tests still pass. The change only affects the API contract, not the
 To test:
 1. Upload a dataset
 2. Write a natural language problem description
-3. Verify GPT-5 returns contextual recommendations
+3. Verify GPT-4o returns contextual recommendations
 4. Check that "problem_understanding" and "recommended_approach" fields are present
 
 ---

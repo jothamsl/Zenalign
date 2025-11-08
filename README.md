@@ -1,18 +1,18 @@
 # Senalign Dataset Quality Validator
 
-A FastAPI backend + React frontend for dataset quality validation with LLM-powered analysis using OpenAI GPT-5.
+A FastAPI backend + React frontend for dataset quality validation with LLM-powered analysis using OpenAI.
 
 ## Features (Incremental Implementation)
 
-### ✅ Feature 1: File Upload + Profiling + PII Detection + GPT-5 Analysis
+### ✅ Feature 1: File Upload + Profiling + PII Detection + GPT-4o Analysis
 - **Upload 15+ data formats**: CSV, TSV, JSON, Excel, Parquet, Feather, HDF5, Stata, SPSS, XML, HTML, and more ([see all formats](FORMATS.md))
 - **Natural language problem description** (no dropdowns!)
 - Automatic data profiling (types, missing data, statistics)
 - PII detection (emails, phones, SSNs, etc.)
-- **GPT-5-powered contextual analysis** tailored to your specific ML problem
+- **GPT-4o-powered contextual analysis** tailored to your specific ML problem
 - React frontend for easy testing
 
-**Key Innovation**: Users describe their ML problem in plain English, and GPT-5 understands the context to provide tailored recommendations, suggest appropriate ML approaches, and identify relevant features.
+**Key Innovation**: Users describe their ML problem in plain English, and GPT-4o understands the context to provide tailored recommendations, suggest appropriate ML approaches, and identify relevant features.
 
 ### 🔜 Feature 2: Exa Integration (Not Yet Implemented)
 ### 🔜 Feature 3: External Augmentation (Not Yet Implemented)
@@ -100,14 +100,14 @@ The easiest way to test Feature 1 is with the included React frontend:
 2. Open http://localhost:3000 in your browser
 3. Upload a dataset (try `tests/sample_data.csv`)
 4. **Describe your ML problem** in natural language (e.g., "I want to predict customer churn...")
-5. Click "Analyze with GPT-5" and view results
+5. Click "Analyze with GPT-4o" and view results
 
 The UI shows:
 - ✅ Dataset upload and validation
 - ✅ **Natural language problem description input**
 - ✅ Real-time analysis status
 - ✅ Quality score with visual indicator
-- ✅ **GPT-5's understanding of your problem**
+- ✅ **GPT-4o's understanding of your problem**
 - ✅ **Recommended ML approaches** tailored to your use case
 - ✅ **Feature engineering suggestions** specific to your problem
 - ✅ PII detection highlights
@@ -355,7 +355,7 @@ start_fullstack.sh        # Full stack quick start
 
 ## LLM Analysis Schema
 
-GPT-5 analyzes your dataset in the context of your problem and returns a structured JSON report:
+GPT-4o analyzes your dataset in the context of your problem and returns a structured JSON report:
 
 ```json
 {

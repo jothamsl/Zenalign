@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LLMClient:
     """OpenAI client for dataset analysis."""
-
+    
     def __init__(self, api_key: str):
         """Initialize with API key. Raises RuntimeError if key missing."""
         if not api_key:
@@ -20,14 +20,14 @@ class LLMClient:
             )
         self.client = OpenAI(api_key=api_key)
         logger.info("LLM client initialized")
-
+    
     def _sanitize_profile_for_llm(self, profile: DatasetProfile) -> Dict[str, Any]:
         """
         Remove raw data and sensitive info from profile before sending to LLM.
         Only send aggregates and statistics.
         """
         sanitized = profile.model_dump()
-
+        
         # For columns with PII, mask the top categories
         for col in sanitized["columns"]:
             if col["pii_detected"] and col["top_categories"]:
@@ -35,27 +35,29 @@ class LLMClient:
                     {"value": "[REDACTED]", "count": item["count"]}
                     for item in col["top_categories"]
                 ]
-
+        
         return sanitized
-
+    
     def analyze_dataset(
-        self, profile: DatasetProfile, request: AnalysisRequest
+        self,
+        profile: DatasetProfile,
+        request: AnalysisRequest
     ) -> Dict[str, Any]:
         """
         Send sanitized profile to OpenAI for analysis.
         Returns structured recommendations.
         """
         logger.info(f"Analyzing dataset {request.dataset_id} with OpenAI GPT-5")
-
+        
         # Sanitize profile
         sanitized_profile = self._sanitize_profile_for_llm(profile)
-
+        
         # Build prompt
         prompt = self._build_analysis_prompt(sanitized_profile, request)
-
+        
         try:
             response = self.client.chat.completions.create(
-                model="gpt-5",
+                model="gpt-4o",
                 messages=[
                     {
                         "role": "system",
@@ -65,30 +67,35 @@ class LLMClient:
                             "in JSON format. Focus on: data quality issues, missing data patterns, potential biases, "
                             "PII concerns, feature engineering opportunities, and dataset suitability for their "
                             "specific use case. Recommend appropriate ML approaches and preprocessing steps."
-                        ),
+                        )
                     },
-                    {"role": "user", "content": prompt},
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
                 ],
                 temperature=0.3,
-                response_format={"type": "json_object"},
+                response_format={"type": "json_object"}
             )
-
+            
             content = response.choices[0].message.content
             logger.info("Received LLM response")
-
+            
             # Parse JSON response
             recommendations = json.loads(content)
             return recommendations
-
+            
         except Exception as e:
             logger.error(f"OpenAI API call failed: {e}")
             raise RuntimeError(
                 f"ERROR: OpenAI API call failed: {str(e)}\n"
                 "ACTION: Verify OPENAI_API_KEY is valid and you have API access."
             )
-
+    
     def _build_analysis_prompt(
-        self, profile: Dict[str, Any], request: AnalysisRequest
+        self,
+        profile: Dict[str, Any],
+        request: AnalysisRequest
     ) -> str:
         """Build the analysis prompt with natural language problem description."""
         return f"""I need help analyzing a dataset for the following machine learning problem:
@@ -97,17 +104,17 @@ USER'S PROBLEM DESCRIPTION:
 "{request.problem_description}"
 
 DATASET PROFILE:
-- Total Rows: {profile["total_rows"]}
-- Total Columns: {profile["total_columns"]}
-- Quality Score: {profile["quality_score"]}/100
-- PII Detected: {profile["pii_summary"]["pii_detected"]}
-- PII Columns: {profile["pii_summary"]["pii_columns"]}
+- Total Rows: {profile['total_rows']}
+- Total Columns: {profile['total_columns']}
+- Quality Score: {profile['quality_score']}/100
+- PII Detected: {profile['pii_summary']['pii_detected']}
+- PII Columns: {profile['pii_summary']['pii_columns']}
 
-Target Column (if specified): {request.target_column or "Not specified"}
-Protected Columns (if any): {request.protected_columns or "None"}
+Target Column (if specified): {request.target_column or 'Not specified'}
+Protected Columns (if any): {request.protected_columns or 'None'}
 
 COLUMN DETAILS:
-{json.dumps(profile["columns"], indent=2)}
+{json.dumps(profile['columns'], indent=2)}
 
 Based on the user's problem description and the dataset profile, provide a comprehensive analysis in the following JSON structure:
 

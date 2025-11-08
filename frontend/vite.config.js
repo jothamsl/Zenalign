@@ -10,5 +10,10 @@ export default defineConfig({
       '/analysis': 'http://localhost:8000',
       '/health': 'http://localhost:8000'
     }
-  }
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
+  base: '/'
 })
