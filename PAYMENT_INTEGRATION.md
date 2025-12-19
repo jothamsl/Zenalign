@@ -110,18 +110,30 @@ app/
 
 ### Environment Variables
 
-Add these to your `.env` file:
+**See [.env.example](file:///Users/jotham/MEGA/Projects/Senalign/.env.example) for a complete template.**
+
+Required variables for your `.env` file:
 
 ```bash
+# Set mode: TEST (sandbox) or LIVE (production)
+INTERSWITCH_MODE=TEST
+
 # Interswitch Configuration
+# Get these from: https://developer.interswitchgroup.com
 INTERSWITCH_CLIENT_ID=your_client_id_here
 INTERSWITCH_SECRET_KEY=your_secret_key_here
-INTERSWITCH_MERCHANT_CODE=your_merchant_code
-INTERSWITCH_PAY_ITEM_ID=your_pay_item_id
+INTERSWITCH_MERCHANT_CODE=your_merchant_code_here
+INTERSWITCH_PAY_ITEM_ID=your_pay_item_id_here
 
 # Optional: Callback URL for payment completion
+# In TEST mode, defaults to http://localhost:3000/payment-success
+# In LIVE mode, defaults to https://senalign.com/payment/callback
 PAYMENT_CALLBACK_URL=https://yourdomain.com/payment/callback
 ```
+
+> [!IMPORTANT]
+> **Do not use placeholder values!** The system will reject credentials containing text like `your_client_id_here` or `your_merchant_code`. You must use actual credentials from your Interswitch account.
+
 
 ### Test Credentials (Default)
 
@@ -627,6 +639,25 @@ async def purchase_tokens(...):
 ---
 
 ## Troubleshooting
+
+### Issue: "Eke's cars" or wrong merchant name displayed
+
+**Symptoms**: 
+- Payment page shows "Eke's cars" or another merchant's name instead of yours
+- Payment fails with "Payment could not be completed with the selected payment method"
+
+**Cause**: You are using placeholder credentials (e.g., `your_merchant_code_here`) or default test credentials that belong to another merchant.
+
+**Solution**:
+1. Go to [Interswitch Developer Console](https://developer.interswitchgroup.com) and get your actual credentials
+2. Update your `.env` file with your real credentials (see `.env.example` for template)
+3. Remove any placeholder text like `your_client_id_here`, `your_merchant_code_here`, etc.
+4. Set `INTERSWITCH_MODE=TEST` for sandbox testing or `INTERSWITCH_MODE=LIVE` for production
+5. Restart the backend server
+
+The system will automatically validate your credentials and show a clear error message if placeholders are detected.
+
+---
 
 ### Issue: "Payment service not initialized"
 

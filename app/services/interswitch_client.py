@@ -62,6 +62,9 @@ class InterswitchClient:
         )
         self.mode = mode.upper()
 
+        # Validate credentials are not placeholders
+        self._validate_credentials()
+
         # Set base URLs based on mode
         if self.mode == "LIVE":
             self.passport_url = "https://passport.interswitchng.com"
@@ -79,6 +82,44 @@ class InterswitchClient:
         logger.info(
             f"InterswitchClient initialized in {self.mode} mode with merchant {self.merchant_code}"
         )
+
+    def _validate_credentials(self) -> None:
+        """
+        Validate that credentials are not placeholder values.
+        
+        Raises:
+            ValueError: If placeholder credentials are detected
+        """
+        placeholders = [
+            "your_client_id", "your_secret_key", "your_merchant_code", 
+            "your_pay_item_id", "your_live_", "your_test_"
+        ]
+        
+        credentials_to_check = {
+            "INTERSWITCH_CLIENT_ID": self.client_id,
+            "INTERSWITCH_SECRET_KEY": self.secret_key,
+            "INTERSWITCH_MERCHANT_CODE": self.merchant_code,
+            "INTERSWITCH_PAY_ITEM_ID": self.pay_item_id,
+        }
+        
+        for cred_name, cred_value in credentials_to_check.items():
+            for placeholder in placeholders:
+                if placeholder.lower() in cred_value.lower():
+                    raise ValueError(
+                        f"\n{'='*80}\n"
+                        f"ERROR: Invalid Interswitch Configuration\n"
+                        f"{'='*80}\n\n"
+                        f"The {cred_name} contains placeholder text: '{cred_value}'\n\n"
+                        f"You must update your .env file with actual credentials from Interswitch.\n\n"
+                        f"Steps to fix:\n"
+                        f"  1. Get your credentials from: https://developer.interswitchgroup.com\n"
+                        f"  2. Update your .env file (see .env.example for template)\n"
+                        f"  3. Set INTERSWITCH_MODE=TEST for testing or LIVE for production\n"
+                        f"  4. Restart the backend server\n\n"
+                        f"{'='*80}\n"
+                    )
+        
+        logger.debug("Credential validation passed")
 
     def _encode_credentials(self) -> str:
         """
@@ -220,8 +261,13 @@ class InterswitchClient:
         try:
             # Generate payment URL
             currency_code = "566" if request.currency == Currency.NGN else "840"  # USD
+            # Set default callback URL based on mode
+            default_callback = "https://senalign.com/payment/callback"
+            if self.mode == "TEST":
+                default_callback = "http://localhost:3000/payment-success"
+
             site_redirect_url = request.callback_url or os.getenv(
-                "PAYMENT_CALLBACK_URL", "https://senalign.com/payment/callback"
+                "PAYMENT_CALLBACK_URL", default_callback
             )
 
             payment_url = self.get_payment_url(

@@ -11,6 +11,7 @@ import { ChatInput } from "./components/ChatInput";
 import { Footer } from "./components/Footer";
 import { AnalysisResults } from "./components/AnalysisResults";
 import { AnalysisReport } from "./services/api";
+import { PaymentSuccess } from "./components/PaymentSuccess";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/results" element={<ResultsPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </Router>
   );
