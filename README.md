@@ -6,7 +6,7 @@ Built with Test-Driven Development (TDD) following principles from "Building App
 
 ## 🎬 Demo
 
-https://github.com/user-attachments/assets/demo_video.mp4
+https://github.com/jothamsl/Zenalign/raw/main/demo_video.mp4
 
 ## 💳 Payment Integration
 
