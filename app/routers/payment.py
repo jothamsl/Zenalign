@@ -27,14 +27,41 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/payment", tags=["Payment"])
 
+from app.services.db import init_db
+
 # Global dependencies (set by main.py during startup)
 _db_client: Optional[MongoClient] = None
 _interswitch_client: Optional[InterswitchClient] = None
 _token_service: Optional[TokenService] = None
 
 
+def _ensure_services_initialized():
+    """Attempt to initialize services if they are missing."""
+    global _db_client, _interswitch_client, _token_service
+
+    try:
+        if _db_client is None:
+            logger.info("Lazy initialization: Connecting to MongoDB...")
+            _db_client = init_db()
+
+        if _interswitch_client is None:
+            logger.info("Lazy initialization: Creating Interswitch client...")
+            _interswitch_client = InterswitchClient()
+
+        if _token_service is None and _db_client is not None:
+            logger.info("Lazy initialization: Creating Token service...")
+            _token_service = TokenService(_db_client)
+            
+    except Exception as e:
+        logger.error(f"Lazy initialization failed: {e}")
+        # Don't raise here, let the specific dependency checks raise if they still fail
+
+
 def get_token_service() -> TokenService:
     """Dependency to get token service instance."""
+    if _token_service is None:
+        _ensure_services_initialized()
+        
     if _token_service is None:
         raise HTTPException(status_code=503, detail="Payment service not initialized")
     return _token_service
@@ -42,6 +69,9 @@ def get_token_service() -> TokenService:
 
 def get_interswitch_client() -> InterswitchClient:
     """Dependency to get Interswitch client instance."""
+    if _interswitch_client is None:
+        _ensure_services_initialized()
+        
     if _interswitch_client is None:
         raise HTTPException(status_code=503, detail="Payment gateway not initialized")
     return _interswitch_client
