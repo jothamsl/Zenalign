@@ -1,4 +1,4 @@
-# Senalign
+# Zenalign
 
 **Backend co-pilot for data scientists to audit, reason about, and enhance dataset quality before ML training.**
 
