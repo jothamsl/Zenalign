@@ -4,6 +4,10 @@
 
 Built with Test-Driven Development (TDD) following principles from "Building Applications with AI Agents" by Michael Albada (O'Reilly 2025).
 
+## 🎬 Demo
+
+https://github.com/jothamsl/Zenalign/raw/main/demo_video.mp4
+
 ## 💳 Payment Integration
 
 Senalign now includes a **token-based monetization system** powered by **Interswitch Payment Gateway**!
